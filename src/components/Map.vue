@@ -106,8 +106,8 @@ onMounted(() => {
 
     // Center the map on the coordinates of any clicked circle from the 'circle' layer.
     map.on("click", "quakes-layer", (e) => {
-      map.flyTo({
-        center: e.lngLatgi,
+      map.easeTo({
+        center: e.lngLat,
       });
     });
   });

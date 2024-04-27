@@ -73,10 +73,10 @@ const getters: GetterTree<QuakeState, QuakeState> & QuakeGetters = {
 };
 
 // Injection key for the store
-export const key: InjectionKey<Store<QuakeState>> = Symbol();
+export const key = Symbol();
 
 // Store instance
-export const store = createStore<QuakeState>({
+export const quakeStore = createStore<QuakeState>({
   state: {
     fetching: false,
     filter: {

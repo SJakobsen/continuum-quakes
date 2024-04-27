@@ -2,7 +2,7 @@ import "./assets/main.css";
 
 import { createApp } from "vue";
 import App from "./App.vue";
-import { key, store } from "./state/quakeStore";
+import { key, quakeStore } from "./state/quakeStore";
 
 import "vuetify/styles";
 import "@mdi/font/css/materialdesignicons.css";
@@ -24,6 +24,6 @@ const vuetify = createVuetify({
 app.use(vuetify);
 
 // Use vuex store
-app.use(store, key);
+app.use(quakeStore, key);
 
 app.mount("#app");
