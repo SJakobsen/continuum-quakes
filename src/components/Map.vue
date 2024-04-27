@@ -2,7 +2,7 @@
 import { useQuakeStore, type QuakeFeature } from "@/state/quakeStore";
 import { onMounted, onUnmounted, ref } from "vue";
 import mapboxgl, { GeoJSONSource, Point } from "mapbox-gl";
-mapboxgl.accessToken = "TODO";
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 const store = useQuakeStore();
 const mapContainer = ref<HTMLInputElement | null>(null);
