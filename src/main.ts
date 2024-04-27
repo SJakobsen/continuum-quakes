@@ -1,6 +1,29 @@
-import './assets/main.css'
+import "./assets/main.css";
 
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
+import { key, store } from "./state/quakeStore";
 
-createApp(App).mount('#app')
+import "vuetify/styles";
+import "@mdi/font/css/materialdesignicons.css";
+import { createVuetify } from "vuetify";
+import * as components from "vuetify/components";
+import * as directives from "vuetify/directives";
+
+const app = createApp(App);
+
+// Vuetify
+const vuetify = createVuetify({
+  components,
+  directives,
+  theme: {
+    defaultTheme: "dark",
+  },
+});
+
+app.use(vuetify);
+
+// Use vuex store
+app.use(store, key);
+
+app.mount("#app");
