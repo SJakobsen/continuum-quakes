@@ -4,6 +4,7 @@ import {
   Store,
   createStore,
   useStore,
+  type ActionTree,
   type GetterTree,
   type MutationTree,
 } from "vuex";
@@ -92,6 +93,20 @@ export const mutations: MutationTree<QuakeState> = {
   },
 };
 
+export const actions: ActionTree<QuakeState, QuakeState> = {
+  fetchQuakes(context) {
+    context.commit("setFetching", true);
+    axios
+      .get(
+        "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
+      )
+      .then((quakes) => {
+        context.commit("setQuakes", quakes.data?.features ?? []);
+      })
+      .finally(() => context.commit("setFetching", false));
+  },
+};
+
 // Injection key for the store
 export const key = Symbol();
 
@@ -106,19 +121,7 @@ export const quakeStore = createStore<QuakeState>({
   },
   getters,
   mutations,
-  actions: {
-    fetchQuakes(context) {
-      context.commit("setFetching", true);
-      axios
-        .get(
-          "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
-        )
-        .then((quakes) => {
-          context.commit("setQuakes", quakes.data?.features ?? []);
-        })
-        .finally(() => context.commit("setFetching", false));
-    },
-  },
+  actions,
 });
 
 /**
