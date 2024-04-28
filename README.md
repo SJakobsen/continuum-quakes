@@ -2,11 +2,17 @@
 
 Hi 👋
 
-I am new to Vue.js so used this as an opportunity to learn as much as anything else 😇
+I am new to Vue.js and MapBox so used this as an opportunity to learn as much as anything else 😇
 
 ## MapBox Token Needed
 
 Please add a MapBox token into [.env](./.env) before starting the app.
+
+## Quirks I had
+
+There may be some clash with Vue.js and typescript after I created the app using `npm create vue@latest`. Essentially, installed types weren't getting picked up. Hence the inclusion of [vuex.d.ts](./vuex.d.ts) as a workaround.
+
+This should hopefully resolve any issues for you too.
 
 ## Recommended IDE Setup
 

@@ -1,12 +1,14 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 
-import { mount } from "@vue/test-utils";
+import { VueWrapper, mount } from "@vue/test-utils";
 import QuakeList from "../QuakeList.vue";
 import { key, quakeStore } from "@/state/quakeStore";
 
 describe("QuakeList", () => {
-  it("renders properly", () => {
-    const wrapper = mount(QuakeList, {
+  let wrapper: VueWrapper;
+
+  beforeEach(() => {
+    wrapper = mount(QuakeList, {
       props: {},
       global: {
         provide: {
@@ -14,6 +16,9 @@ describe("QuakeList", () => {
         },
       },
     });
+  });
+
+  it("renders properly", () => {
     expect(wrapper.text()).toContain("No data found");
   });
 });

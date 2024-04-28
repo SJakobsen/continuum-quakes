@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useQuakeStore, type QuakeFeature } from "@/state/quakeStore";
 import { onMounted, onUnmounted, ref } from "vue";
-import mapboxgl, { GeoJSONSource, Point } from "mapbox-gl";
+import mapboxgl, { GeoJSONSource } from "mapbox-gl";
+
+// This is not secure, but workable for a public project.
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 const store = useQuakeStore();
@@ -26,18 +28,8 @@ const removeHoverState = () => {
   hoveredQuakeId = undefined;
 };
 
-// Update the earthquake source to only show filtered quakes
-store.watch(
-  (state, getters) => getters.filteredQuakes,
-  (newValue: QuakeFeature[], oldValue) => {
-    (map.getSource("earthquakes") as GeoJSONSource).setData({
-      type: "FeatureCollection",
-      features: newValue,
-    });
-  }
-);
-
 onMounted(() => {
+  // Center the map on an existing quake to be more useful.
   const initialQuake = store.getters.filteredQuakes?.[0] ?? undefined;
   const initialCenter = initialQuake
     ? [
@@ -83,7 +75,7 @@ onMounted(() => {
 
     // Set hover feature state for quake points when moving over the layer.
     map.on("mousemove", "quakes-layer", (e) => {
-      if (e?.features?.length && e.features.length > 0) {
+      if (e?.features?.length) {
         removeHoverState();
 
         let hoveredQuake = e.features[0];
@@ -111,6 +103,17 @@ onMounted(() => {
       });
     });
   });
+
+  // Update the earthquake source to only show filtered quakes
+  store.watch(
+    (_state, getters) => getters.filteredQuakes,
+    (newValue: QuakeFeature[], _oldValue) => {
+      (map.getSource("earthquakes") as GeoJSONSource).setData({
+        type: "FeatureCollection",
+        features: newValue,
+      });
+    }
+  );
 });
 
 onUnmounted(() => {
@@ -124,7 +127,6 @@ onUnmounted(() => {
 
 <style>
 .map-container {
-  flex: 1;
   height: 100%;
   min-height: 500px;
 }

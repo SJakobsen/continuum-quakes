@@ -1,7 +1,12 @@
 import axios from "axios";
 import type { Feature, Point } from "geojson";
-import type { InjectionKey } from "vue";
-import { Store, createStore, useStore, type GetterTree } from "vuex";
+import {
+  Store,
+  createStore,
+  useStore,
+  type GetterTree,
+  type MutationTree,
+} from "vuex";
 
 /**
  * Properties specific to our earthquake API.
@@ -64,11 +69,26 @@ export interface QuakeStore extends Store<QuakeState> {
   };
 }
 
-const getters: GetterTree<QuakeState, QuakeState> & QuakeGetters = {
+export const getters: GetterTree<QuakeState, QuakeState> & QuakeGetters = {
   filteredQuakes(state) {
     return state.quakes.filter((quake) =>
       quake.properties.place.toLowerCase().includes(state.filter.place)
     );
+  },
+};
+
+export const mutations: MutationTree<QuakeState> = {
+  setFetching(state, fetching: boolean): void {
+    state.fetching = fetching;
+  },
+  setPlaceFilter(state, filter: string): void {
+    state.filter.place = filter;
+  },
+  setFocusedQuake(state, quake?: QuakeFeature): void {
+    state.focusedQuake = quake;
+  },
+  setQuakes(state, quakes: QuakeFeature[]): void {
+    state.quakes = quakes;
   },
 };
 
@@ -85,20 +105,7 @@ export const quakeStore = createStore<QuakeState>({
     quakes: [],
   },
   getters,
-  mutations: {
-    setFetching(state, fetching: boolean): void {
-      state.fetching = fetching;
-    },
-    setPlaceFilter(state, filter: string): void {
-      state.filter.place = filter;
-    },
-    setFocusedQuake(state, quake?: QuakeFeature): void {
-      state.focusedQuake = quake;
-    },
-    setQuakes(state, quakes: QuakeFeature[]): void {
-      state.quakes = quakes;
-    },
-  },
+  mutations,
   actions: {
     fetchQuakes(context) {
       context.commit("setFetching", true);

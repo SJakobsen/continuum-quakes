@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useQuakeStore, type QuakeFeature } from "@/state/quakeStore";
-import { onMounted, onUnmounted } from "vue";
-import type { SubscribeOptions } from "vuex";
+import { useQuakeStore } from "@/state/quakeStore";
+import { onMounted } from "vue";
 
 const store = useQuakeStore();
 
@@ -11,12 +10,30 @@ const alertColourMap = new Map<string, string>([
   ["orange", "orange-accent-3"],
   ["red", "red-accent-3"],
 ]);
+
+onMounted(() => {
+  // For when the list becomes scrollable, scroll the focused quake into view.
+  // Ignore for smaller screen sizes to avoid jumping around.
+  store.subscribe((mutation, state) => {
+    if (
+      mutation.type === "setFocusedQuake" &&
+      mutation.payload &&
+      window.innerWidth > 720
+    ) {
+      const toScroll = document.getElementById(
+        `quakeListItem_${state.focusedQuake?.id}`
+      );
+      toScroll?.scrollIntoView();
+    }
+  });
+});
 </script>
 
 <template>
   <v-list v-if="store.getters.filteredQuakes?.length > 0" lines="one">
     <v-list-item
       v-for="quake in store.getters.filteredQuakes"
+      :id="`quakeListItem_${quake.id}`"
       :key="quake.id"
       :title="quake.properties.place"
       :subtitle="'Magnitude: ' + quake.properties.mag"
